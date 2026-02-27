@@ -64,3 +64,39 @@ class TicTacToe {
 
 // Usage
 const game = new TicTacToe();
+
+// DOM integration: make grid clickable and show current player
+function updateUI() {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach((cell, idx) => {
+        const value = game.board[idx];
+        cell.textContent = value;
+        cell.disabled = value !== EMPTY;
+    });
+
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = game.getGameStatus();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach(cell => {
+        cell.addEventListener('click', () => {
+            const index = parseInt(cell.dataset.index, 10);
+            if (game.checkWin() || game.checkDraw()) return;
+            const moved = game.makeMove(index);
+            if (!moved) return;
+            updateUI();
+        });
+    });
+
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            game.reset();
+            updateUI();
+        });
+    }
+
+    updateUI();
+});
